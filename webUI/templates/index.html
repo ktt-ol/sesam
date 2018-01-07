@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/">
+    <title>Sesam</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+
+<body class="{{.statusClass}}">
+
+<div class="header">
+    <div class="container">
+        <div class="brand">
+            <img src="assets/images/mainframe-long.svg" alt="Mainframe" class="logo">
+            <span class="name">Sesam</span>
+        </div>
+        <div class="actions">
+            <span class="login">[ {{.login}} ]</span>
+            <span class="logout-action">
+                <a href="/logout">Logout</a>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+{{if not .isOpen }}
+    <div class="space-closed">
+        The space is closed. You can't open any doors.
+    </div>
+{{end}}
+
+{{if .isOpen }}
+    <div class="door-actions text-center" id="doorButtons">
+        <button class="btn btn-lg btn-primary" onclick="buzzer('outer')">Open OUTER door</button>
+        <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+        <button class="btn btn-lg btn-primary" onclick="buzzer('inner')">Open INNER door</button>
+    </div>
+    <div class="alert alert-danger" role="alert" id="errorBox">
+        Error, I can't open the door for you :(
+    </div>
+    <div class="alert alert-info" role="alert" id="successBox">
+        Door can now be opened...
+    </div>
+{{end}}
+
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <a href="https://github.com/ktt-ol/sesam">https://github.com/ktt-ol/sesam</a>
+    </div>
+</footer>
+
+<script>
+    function buzzer(door) {
+        var errorBox = document.getElementById('errorBox');
+        var successBox = document.getElementById('successBox');
+        errorBox.style.display = 'none';
+        successBox.style.display = 'none';
+
+        var dooButtons = document.getElementById("doorButtons");
+        dooButtons.className += " sending";
+        var buttons = document.getElementsByTagName("button");
+        for (var i = 0; i < buttons.length; i++) {
+            buttons.item(i).disabled = true;
+        }
+
+        sendRequest('/buzzer?door=' + door,
+                function (serverError, response) {
+                    dooButtons.className = dooButtons.className.replace('sending', '');
+                    var buttons = document.getElementsByTagName('button');
+                    for (var i = 0; i < buttons.length; i++) {
+                        buttons.item(i).disabled = false;
+                    }
+
+                    if (serverError) {
+                        errorBox.style.display = 'block';
+                    } else {
+                        if (response === 'OK') {
+                            successBox.style.display = 'block';
+                        } else if (response === 'LOGIN') {
+                            window.location = '/login';
+                        } else {
+                            errorBox.style.display = 'block';
+                        }
+                    }
+                    hideBoxWithTimeout();
+                }
+        );
+    }
+
+    var timeoutHandle;
+    function hideBoxWithTimeout() {
+        if (timeoutHandle) {
+            window.clearTimeout(timeoutHandle);
+        }
+        timeoutHandle = window.setTimeout(function () {
+            document.getElementById('errorBox').style.display = 'none';
+            document.getElementById('successBox').style.display = 'none';
+        }, 3000);
+    }
+
+    function sendRequest(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', url);
+        xhr.setRequestHeader('X-CSRF-TOKEN', '{{.csrf}}');
+        xhr.send(null);
+        xhr.onreadystatechange = function () {
+            var DONE = 4; // readyState 4 means the request is done.
+            var OK = 200; // status 200 is a successful return.
+            if (xhr.readyState === DONE) {
+                if (xhr.status === OK) {
+                    callback(false, xhr.responseText);
+                } else {
+                    callback(true, xhr);
+                }
+            }
+        };
+    }
+</script>
+
+</body>
+</html>

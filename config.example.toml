@@ -1,0 +1,30 @@
+# COPY THIS TO config.toml
+[Logging]
+debugLogging = false
+# if enabled, all logging goes to the file. Warn and up goes to stderr, too.
+# logfile = "/var/log/spaceDevices2.log"
+
+[server]
+host = "0.0.0.0"
+port = 9000
+# the app requires https, if you disable https here you must use https with a proxy e.g. nginx
+https = false
+# optional if https is false
+certFile = "...your.cer"
+# optional if https is false
+certKeyFile = "...your.key"
+# store to save authentication/encryption keys. If the file is recreated, all old sessions are invalid.
+keysFile = "mykeys"
+
+
+[mqtt]
+url = "tls://spacegate.mainframe.lan:8883"
+certFile = "spacegate.cert.pem"
+username = ""
+password = ""
+statusTopic = "/access-control-system/space-state"
+doorBuzzerTopic = "/access-control-system/activate-door-buzzer"
+
+[auth]
+userDirectory = "path/to/user/dir"
+groupPageFile = "path/to/groupPageFile"

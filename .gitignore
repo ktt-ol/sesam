@@ -1,0 +1,5 @@
+.idea
+config.toml
+vendor/
+wiki_user_data/
+sesam

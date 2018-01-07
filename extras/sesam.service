@@ -1,0 +1,20 @@
+[Unit]
+Description=The door buzzer for members
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+User=sesam
+Group=sesam
+Environment="GIN_MODE=release"
+WorkingDirectory=/home/sesam/sesam-app
+ExecStart=/home/sesam/sesam-app/sesam
+Restart=always
+RestartSec=60
+
+# Give a reasonable amount of time for the server to start up/shut down
+TimeoutSec=60
+
+[Install]
+WantedBy=multi-user.target

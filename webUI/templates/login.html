@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/">
+    <title>Space Devices</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+
+<body>
+
+<div class="header">
+    <div class="container">
+        <div class="brand">
+            <img src="assets/images/mainframe-long.svg" alt="Mainframe" class="logo">
+            <span class="name">Sesam</span>
+        </div>
+    </div>
+</div>
+
+<div class="container login-container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Please Login</h3>
+                </div>
+                <div class="panel-body">
+                    <p>Use your <a href="https://wiki.mainframe.io" target="_blank">Wiki</a> credentials.</p>
+
+                    {{if .error }}
+                        <div class="alert alert-danger" role="alert">
+                            Unknown email address or invalid password :(
+                        </div>
+                    {{end}}
+
+                    <form accept-charset="UTF-8" role="form" action="/login" method="post">
+                        <input type="hidden" name="_csrf" value="{{.csrf}}">
+                        <fieldset>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="E-Mail or name" name="email" type="text">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Password" name="password" type="password"
+                                       value="">
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="remember" value="1"> Remember login for {{.days}} days
+                                </label>
+                            </div>
+
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <a href="https://github.com/ktt-ol/sesam">https://github.com/ktt-ol/sesam</a>
+    </div>
+</footer>
+
+</body>
+</html>
