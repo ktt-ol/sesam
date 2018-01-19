@@ -41,12 +41,14 @@ func StartWeb(config conf.ServerConf, wikiData *wikidata.WikiData, mqttHandler *
 	router.Use(csrf.Middleware(csrf.Options{
 		Secret: keys.CsrfKey,
 		ErrorFunc: func(c *gin.Context){
+			logger.Warn("CSRF token mismatch")
 			c.String(400, "CSRF token mismatch")
 			c.Abort()
 		},
 	}))
 
 	router.Static("/assets", "webUI/assets")
+	router.StaticFile("/swDummy.js", "webUI/swDummy.js")
 	router.LoadHTMLGlob("webUI/templates/*.html")
 
 	router.GET("/", webHandler.getMain)

@@ -8,8 +8,13 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
+    <link rel="icon" href="assets/icons/launcher-icon-1x.png" sizes="48x48" />
+    <link rel="icon" href="assets/icons/launcher-icon-2x.png" sizes="96x96" />
+    <link rel="icon" href="assets/icons/launcher-icon-4x.png" sizes="192x192" />
+
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="manifest" href="assets/manifest.json">
 </head>
 
 <body class="{{.statusClass}}">
@@ -39,13 +44,13 @@
 
 {{if .isOpen }}
     <div class="door-actions text-center" id="doorButtons">
-        <button class="btn btn-lg btn-primary" onclick="buzzer('outer')">Open OUTER door</button>
+        <button class="btn btn-lg btn-primary" onclick="buzzer('outer', '{{.csrf}}')">Open OUTER door</button>
         <div class="spinner">
             <div class="bounce1"></div>
             <div class="bounce2"></div>
             <div class="bounce3"></div>
         </div>
-        <button class="btn btn-lg btn-primary" onclick="buzzer('inner')">Open INNER door</button>
+        <button class="btn btn-lg btn-primary" onclick="buzzer('inner', '{{.csrf}}')">Open INNER door</button>
     </div>
     <div class="alert alert-danger" role="alert" id="errorBox">
         Error, I can't open the door for you :(
@@ -63,73 +68,7 @@
     </div>
 </footer>
 
-<script>
-    function buzzer(door) {
-        var errorBox = document.getElementById('errorBox');
-        var successBox = document.getElementById('successBox');
-        errorBox.style.display = 'none';
-        successBox.style.display = 'none';
-
-        var dooButtons = document.getElementById("doorButtons");
-        dooButtons.className += " sending";
-        var buttons = document.getElementsByTagName("button");
-        for (var i = 0; i < buttons.length; i++) {
-            buttons.item(i).disabled = true;
-        }
-
-        sendRequest('/buzzer?door=' + door,
-                function (serverError, response) {
-                    dooButtons.className = dooButtons.className.replace('sending', '');
-                    var buttons = document.getElementsByTagName('button');
-                    for (var i = 0; i < buttons.length; i++) {
-                        buttons.item(i).disabled = false;
-                    }
-
-                    if (serverError) {
-                        errorBox.style.display = 'block';
-                    } else {
-                        if (response === 'OK') {
-                            successBox.style.display = 'block';
-                        } else if (response === 'LOGIN') {
-                            window.location = '/login';
-                        } else {
-                            errorBox.style.display = 'block';
-                        }
-                    }
-                    hideBoxWithTimeout();
-                }
-        );
-    }
-
-    var timeoutHandle;
-    function hideBoxWithTimeout() {
-        if (timeoutHandle) {
-            window.clearTimeout(timeoutHandle);
-        }
-        timeoutHandle = window.setTimeout(function () {
-            document.getElementById('errorBox').style.display = 'none';
-            document.getElementById('successBox').style.display = 'none';
-        }, 3000);
-    }
-
-    function sendRequest(url, callback) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('PUT', url);
-        xhr.setRequestHeader('X-CSRF-TOKEN', '{{.csrf}}');
-        xhr.send(null);
-        xhr.onreadystatechange = function () {
-            var DONE = 4; // readyState 4 means the request is done.
-            var OK = 200; // status 200 is a successful return.
-            if (xhr.readyState === DONE) {
-                if (xhr.status === OK) {
-                    callback(false, xhr.responseText);
-                } else {
-                    callback(true, xhr);
-                }
-            }
-        };
-    }
-</script>
+<script src="assets/js/site.js"></script>
 
 </body>
 </html>

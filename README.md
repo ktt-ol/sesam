@@ -38,4 +38,8 @@ You can also use the systemd service file `extras/sesam.service`
 
 # TODO
 
-* block a client after too many failed passwords attempts 
+* block a client after too many failed passwords attempts
+
+# Assets
+
+* Got the 'key' icon from https://icons8.de/icon/set/key/all
