@@ -11,6 +11,7 @@ import (
 	"strings"
 	"github.com/ktt-ol/sesam/mqtt"
 	"github.com/utrack/gin-csrf"
+	"time"
 )
 
 const KEY_USER_NAME = "userName"
@@ -140,6 +141,9 @@ func (w *web) postLogin(c *gin.Context) {
 		sendError(c, "Invalid binding.")
 		return
 	}
+
+	// just let this request take at least one second to make password guessing more difficult. 
+	time.Sleep(time.Duration(time.Second))
 
 	form.Email = strings.ToLower(form.Email)
 	success, userName, _ := w.wikiData.CheckPassword(form.Email, form.Password)
