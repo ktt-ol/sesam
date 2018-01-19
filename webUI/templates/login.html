@@ -30,7 +30,7 @@
 
 <div class="container login-container">
     <div class="row">
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Please Login</h3>
@@ -40,7 +40,7 @@
 
                     {{if .error }}
                         <div class="alert alert-danger" role="alert">
-                            Unknown email address or invalid password :(
+                            Unknown email/name or invalid password :(
                         </div>
                     {{end}}
 
@@ -48,11 +48,10 @@
                         <input type="hidden" name="_csrf" value="{{.csrf}}">
                         <fieldset>
                             <div class="form-group">
-                                <input class="form-control" placeholder="E-Mail or name" name="email" type="text">
+                                <input class="form-control" placeholder="Email or name" name="email" type="text" required>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Password" name="password" type="password"
-                                       value="">
+                                <input class="form-control" placeholder="Password" name="password" type="password" required>
                             </div>
                             <div class="checkbox">
                                 <label>
