@@ -9,6 +9,8 @@ import (
 	"os"
 	"bufio"
 	"github.com/sirupsen/logrus"
+	"errors"
+	"fmt"
 )
 
 var logger = logrus.WithField("where", "WikiData")
@@ -30,12 +32,12 @@ func NewWikiData(userDirectory string, groupPageFile string) *WikiData {
 
 // CheckPassword checks the password for the given email or name
 // if the login was successful (sucess = true) the userName is returned, even if the user logged in with an email
-func (w *WikiData) CheckPassword(emailOrName string, password string) (success bool, userName string, loginNotFound bool) {
-	userLogger := logger.WithField("login", emailOrName)
+func (w *WikiData) CheckPassword(emailOrName string, password string) (userName string, loginNotFound bool, errResult error) {
 	userName = emailOrName
 	if strings.Contains(emailOrName, "@") {
 		nameFromMap, ok := w.emailToNameMap[emailOrName]
 		if !ok {
+			errResult = errors.New("email doesn't exist (or not in Member group)")
 			loginNotFound = true
 			return
 		}
@@ -44,7 +46,7 @@ func (w *WikiData) CheckPassword(emailOrName string, password string) (success b
 
 	pwHash, ok := w.nameToHashMap[userName]
 	if !ok {
-		userLogger.Info("User doesn't exist (or not in Member group).")
+		errResult = errors.New("user doesn't exist (or not in Member group)")
 		loginNotFound = true
 		return
 	}
@@ -53,12 +55,10 @@ func (w *WikiData) CheckPassword(emailOrName string, password string) (success b
 	if err != nil {
 		// incorrect password, malformed hash, etc.
 		// either way, reject
-		userLogger.WithError(err).Info("Invalid password.")
+		errResult = errors.New(fmt.Sprintf("invalid password (lib said: '%s'", err))
 		return
 	}
 
-	userLogger.Info("Successful login.")
-	success = true
 	return
 }
 

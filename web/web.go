@@ -97,10 +97,11 @@ func (w *web) getMain(c *gin.Context) {
 }
 
 func (w *web) putBuzzer(c *gin.Context) {
+	ipLogger := logger.WithField("ip", c.ClientIP())
 	session := sessions.Default(c)
 	loginV := session.Get(KEY_USER_NAME)
 	if loginV == nil {
-		logger.Info("Not logged in.")
+		ipLogger.Info("Not logged in.")
 		c.String(200, "LOGIN")
 		return
 	}
@@ -113,13 +114,14 @@ func (w *web) putBuzzer(c *gin.Context) {
 	} else if doorStr == "outer" {
 		door = mqtt.DoorOuter
 	} else {
-		logger.WithField("doorStr", doorStr).Error("Invalid 'door' param")
+		ipLogger.WithField("doorStr", doorStr).Error("Invalid 'door' param")
 		sendError(c, "Invalid 'door' param.")
 		return
 	}
 
 	ok := w.mqttHandler.SendDoorBuzzer(door, userName)
 	if ok {
+		ipLogger.WithField("userName", userName).WithField("door", doorStr).Info("door opened")
 		c.String(200, "OK")
 	} else {
 		c.String(200, "ERROR")
@@ -135,19 +137,21 @@ func (w *web) getLogin(c *gin.Context) {
 }
 
 func (w *web) postLogin(c *gin.Context) {
+	ipLogger := logger.WithField("ip", c.ClientIP())
 	var form loginData
 	if err := c.Bind(&form); err != nil {
-		logger.WithError(err).Error("Invalid binding.")
+		ipLogger.WithError(err).Error("Invalid binding.")
 		sendError(c, "Invalid binding.")
 		return
 	}
 
-	// just let this request take at least one second to make password guessing more difficult. 
+	// just let this request take at least one second to make password guessing more difficult.
 	time.Sleep(time.Duration(time.Second))
 
 	form.Email = strings.ToLower(form.Email)
-	success, userName, _ := w.wikiData.CheckPassword(form.Email, form.Password)
-	if !success {
+	userName, _, err := w.wikiData.CheckPassword(form.Email, form.Password)
+	if err != nil {
+		ipLogger.WithError(err).Warn("login failed.")
 		c.HTML(http.StatusOK, "login.html", gin.H{
 			"days":  REMEMBER_PASSWORD_DAYS,
 			"error": true,
@@ -156,6 +160,7 @@ func (w *web) postLogin(c *gin.Context) {
 		return
 	}
 
+	ipLogger.WithField("userName", userName).Info("login successful")
 	session := sessions.Default(c)
 	if len(form.Remember) > 0 {
 		maxAgeSeconds := REMEMBER_PASSWORD_DAYS * 24 * 60 * 60
