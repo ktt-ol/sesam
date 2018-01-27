@@ -19,7 +19,8 @@ var mqttLogger = logrus.WithField("where", "mqtt")
 type Door int8
 
 const DoorOuter = Door(0)
-const DoorInner = Door(1)
+const DoorInnerGlass = Door(1)
+const DoorInnerMetal = Door(2)
 
 type MqttHandler struct {
 	client          mqtt.Client

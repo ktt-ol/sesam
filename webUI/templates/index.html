@@ -50,7 +50,9 @@
             <div class="bounce2"></div>
             <div class="bounce3"></div>
         </div>
-        <button class="btn btn-lg btn-primary" onclick="buzzer('inner', '{{.csrf}}')">Open INNER door</button>
+        <button class="btn btn-lg btn-primary" onclick="buzzer('innerGlass', '{{.csrf}}')">Open INNER Glass door</button>
+
+        <button class="btn btn-lg btn-primary" onclick="buzzer('innerMetal', '{{.csrf}}')">Open INNER Metal door</button>
     </div>
     <div class="alert alert-danger" role="alert" id="errorBox">
         Error, I can't open the door for you :(

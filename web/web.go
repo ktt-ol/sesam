@@ -41,7 +41,7 @@ func StartWeb(config conf.ServerConf, wikiData *wikidata.WikiData, mqttHandler *
 
 	router.Use(csrf.Middleware(csrf.Options{
 		Secret: keys.CsrfKey,
-		ErrorFunc: func(c *gin.Context){
+		ErrorFunc: func(c *gin.Context) {
 			logger.Warn("CSRF token mismatch")
 			c.String(400, "CSRF token mismatch")
 			c.Abort()
@@ -92,7 +92,7 @@ func (w *web) getMain(c *gin.Context) {
 		"login":       login,
 		"statusClass": status,
 		"isOpen":      isOpen,
-		"csrf": csrf.GetToken(c),
+		"csrf":        csrf.GetToken(c),
 	})
 }
 
@@ -109,11 +109,14 @@ func (w *web) putBuzzer(c *gin.Context) {
 
 	doorStr := c.Query("door")
 	var door mqtt.Door
-	if doorStr == "inner" {
-		door = mqtt.DoorInner
-	} else if doorStr == "outer" {
+	switch doorStr {
+	case "innerGlass":
+		door = mqtt.DoorInnerGlass
+	case "innerMetal":
+		door = mqtt.DoorInnerMetal
+	case "outer":
 		door = mqtt.DoorOuter
-	} else {
+	default:
 		ipLogger.WithField("doorStr", doorStr).Error("Invalid 'door' param")
 		sendError(c, "Invalid 'door' param.")
 		return
@@ -126,7 +129,6 @@ func (w *web) putBuzzer(c *gin.Context) {
 	} else {
 		c.String(200, "ERROR")
 	}
-
 }
 
 func (w *web) getLogin(c *gin.Context) {
@@ -155,7 +157,7 @@ func (w *web) postLogin(c *gin.Context) {
 		c.HTML(http.StatusOK, "login.html", gin.H{
 			"days":  REMEMBER_PASSWORD_DAYS,
 			"error": true,
-			"csrf": csrf.GetToken(c),
+			"csrf":  csrf.GetToken(c),
 		})
 		return
 	}
