@@ -8,15 +8,22 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+function removeClass(node, className) {
+    node.className = node.className.replace(className, '');
+}
+function addClass(node, className) {
+    node.className += " " + className;
+}
 
 function buzzer(door, csrfToken) {
-    var errorBox = document.getElementById('errorBox');
-    var successBox = document.getElementById('successBox');
-    errorBox.style.display = 'none';
-    successBox.style.display = 'none';
+    var errorSnack = document.getElementById('errorSnack');
+    var infoSnack = document.getElementById('infoSnack');
+
+    removeClass(errorSnack, "show");
+    removeClass(infoSnack, "show");
 
     var dooButtons = document.getElementById("doorButtons");
-    dooButtons.className += " sending";
+    addClass(dooButtons, "sending");
     var buttons = document.getElementsByTagName("button");
     for (var i = 0; i < buttons.length; i++) {
         buttons.item(i).disabled = true;
@@ -24,21 +31,21 @@ function buzzer(door, csrfToken) {
 
     sendRequest('/buzzer?door=' + door, csrfToken,
         function (serverError, response) {
-            dooButtons.className = dooButtons.className.replace('sending', '');
+            removeClass(dooButtons, "sending");
             var buttons = document.getElementsByTagName('button');
             for (var i = 0; i < buttons.length; i++) {
                 buttons.item(i).disabled = false;
             }
 
             if (serverError) {
-                errorBox.style.display = 'block';
+                addClass(errorSnack, "show");
             } else {
                 if (response === 'OK') {
-                    successBox.style.display = 'block';
+                    addClass(infoSnack, "show");
                 } else if (response === 'LOGIN') {
                     window.location = '/login';
                 } else {
-                    errorBox.style.display = 'block';
+                    addClass(errorSnack, "show");
                 }
             }
             hideBoxWithTimeout();
@@ -53,8 +60,8 @@ function hideBoxWithTimeout() {
         window.clearTimeout(timeoutHandle);
     }
     timeoutHandle = window.setTimeout(function () {
-        document.getElementById('errorBox').style.display = 'none';
-        document.getElementById('successBox').style.display = 'none';
+        removeClass(document.getElementById('errorSnack'), "show");
+        removeClass(document.getElementById('infoSnack'), "show");
     }, 3000);
 }
 

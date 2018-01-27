@@ -44,24 +44,29 @@
 
 {{if .isOpen }}
     <div class="door-actions text-center" id="doorButtons">
-        <button class="btn btn-lg btn-primary" onclick="buzzer('outer', '{{.csrf}}')">Open OUTER door</button>
-        <div class="spinner">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
+        <div class="spinning-container">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
         </div>
+
+        <button class="btn btn-lg btn-primary" onclick="buzzer('outer', '{{.csrf}}')">Open OUTER door</button>
+
         <button class="btn btn-lg btn-primary" onclick="buzzer('innerGlass', '{{.csrf}}')">Open INNER Glass door</button>
 
         <button class="btn btn-lg btn-primary" onclick="buzzer('innerMetal', '{{.csrf}}')">Open INNER Metal door</button>
     </div>
-    <div class="alert alert-danger" role="alert" id="errorBox">
-        Error, I can't open the door for you :(
-    </div>
-    <div class="alert alert-info" role="alert" id="successBox">
-        Door can now be opened...
-    </div>
 {{end}}
 
+</div>
+
+<div id="infoSnack" class="snackbar">
+    Door can now be opened...
+</div>
+<div id="errorSnack" class="snackbar error">
+    Error, I can't open the door for you :(
 </div>
 
 <footer class="footer">

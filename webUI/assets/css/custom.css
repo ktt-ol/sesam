@@ -41,11 +41,11 @@ body.opened {
 .door-actions {
     position: relative;
 }
-.door-actions .spinner {
-    visibility: hidden;
+.door-actions .spinning-container {
+    display: none;
 }
-.door-actions.sending .spinner {
-    visibility: visible;
+.door-actions.sending .spinning-container {
+    display: flex;
 }
 
 .door-actions button {
@@ -67,6 +67,17 @@ body.opened {
 
 
 /* http://tobiasahlin.com/spinkit/ */
+.spinning-container {
+    position: fixed;
+    top: 40%;
+    width: 150px;
+    height: 60px;
+    background: white;
+    left: calc(50% - 75px);
+    align-items: center;
+    border-radius: 4px;
+    z-index: 1;
+}
 .spinner {
     margin: 10px auto 0;
     width: 70px;
@@ -110,4 +121,49 @@ body.opened {
           transform: scale(1.0);
           -webkit-transform: scale(1.0);
       }
+}
+
+/* https://www.w3schools.com/howto/howto_js_snackbar.asp */
+.snackbar {
+    visibility: hidden;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    bottom: 30px;
+    font-size: 17px;
+}
+
+.snackbar.error {
+    background-color: #ac2925;
+}
+
+.snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
 }
