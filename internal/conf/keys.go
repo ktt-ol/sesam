@@ -1,11 +1,11 @@
 package conf
 
 import (
-	"os"
-	"encoding/base64"
 	"crypto/rand"
+	"encoding/base64"
 	"github.com/sirupsen/logrus"
 	"io"
+	"os"
 )
 
 var logger = logrus.WithField("where", "keys")

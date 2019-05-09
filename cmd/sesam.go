@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/ktt-ol/sesam/wikidata"
-	"github.com/ktt-ol/sesam/conf"
-	"github.com/ktt-ol/sesam/web"
-	"github.com/ktt-ol/sesam/mqtt"
-	"github.com/sirupsen/logrus"
 	"fmt"
+	"github.com/ktt-ol/sesam/internal/conf"
+	"github.com/ktt-ol/sesam/internal/mqtt"
+	"github.com/ktt-ol/sesam/internal/web"
+	"github.com/ktt-ol/sesam/internal/wikidata"
+	"github.com/sirupsen/logrus"
 	"os"
 )
 
@@ -15,12 +15,13 @@ func main() {
 	setupLogging(config.Logging)
 
 	logrus.WithFields(logrus.Fields{
-		"doorBuzzer": config.Mqtt.DoorBuzzerTopic,
-		"status": config.Mqtt.StatusTopic,
+		"url": config.Mqtt.Url,
 		"mqttUser": config.Mqtt.Username,
 	}).Info("Sesam is starting...")
 
 	wikiData := wikidata.NewWikiData(config.Auth.UserDirectory, config.Auth.GroupPageFile)
+
+	//mqtt.EnableMqttDebugLogging()
 	mqttHandler := mqtt.NewMqttHandler(config.Mqtt)
 
 	web.StartWeb(config.Server, wikiData, mqttHandler)

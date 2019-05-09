@@ -6,13 +6,16 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/eclipse/paho.mqtt.golang"
-	"github.com/sirupsen/logrus"
-	"github.com/ktt-ol/sesam/conf"
 	"fmt"
+	"github.com/eclipse/paho.mqtt.golang"
+	"github.com/ktt-ol/sesam/internal/conf"
+	"github.com/sirupsen/logrus"
 )
 
 const CLIENT_ID = "sesam"
+
+// the amount of ms the door will buzz
+const BUZZER_DURATION = 4004
 
 var mqttLogger = logrus.WithField("where", "mqtt")
 
@@ -23,10 +26,9 @@ const DoorInnerGlass = Door(1)
 const DoorInnerMetal = Door(2)
 
 type MqttHandler struct {
-	client          mqtt.Client
-	status          string
-	statusTopic     string
-	doorBuzzerTopic string
+	client mqtt.Client
+	status string
+	conf   conf.MqttConf
 }
 
 func EnableMqttDebugLogging() {
@@ -61,7 +63,7 @@ func NewMqttHandler(conf conf.MqttConf) *MqttHandler {
 	opts.SetKeepAlive(10 * time.Second)
 	opts.SetMaxReconnectInterval(5 * time.Minute)
 
-	handler := MqttHandler{status: conf.StatusTopic, doorBuzzerTopic: conf.DoorBuzzerTopic}
+	handler := MqttHandler{status: conf.StatusTopic, conf: conf}
 	opts.SetOnConnectHandler(handler.onConnect)
 	opts.SetConnectionLostHandler(handler.onConnectionLost)
 
@@ -77,21 +79,28 @@ func (h *MqttHandler) CurrentStatus() string {
 	return h.status
 }
 
-func (h *MqttHandler) SendDoorBuzzer(door Door, userName string) bool {
-	mqttLogger.WithFields(logrus.Fields{
-		"door":     door,
-		"userName": userName,
-	}).Info("sending door buzzer.")
-
+func (h *MqttHandler) SendDoorBuzzer(door Door) bool {
 	if h.status != "open" && h.status != "open+" && h.status != "member" {
 		mqttLogger.WithField("status", h.status).Error("door buzzer is not allowed for the current status.")
 		return false
 	}
 
-	token := h.client.Publish(h.doorBuzzerTopic, 0, false, fmt.Sprintf("%d %s", door, userName))
+	var topic string
+	switch door {
+	case DoorOuter:
+		topic = h.conf.DoorDownstairsBuzzerTopic
+		break
+	case DoorInnerGlass:
+		topic = h.conf.GlassDoorBuzzerTopic
+		break
+	case DoorInnerMetal:
+		topic = h.conf.MainDoorBuzzerTopic
+		break
+	}
+	token := h.client.Publish(topic, 0, false, fmt.Sprintf("%d", BUZZER_DURATION))
 	ok := token.WaitTimeout(time.Duration(time.Second * 10))
 	if !ok {
-		mqttLogger.WithError(token.Error()).WithField("topic", h.doorBuzzerTopic).Info("Error sending door buzzer.")
+		mqttLogger.WithError(token.Error()).WithField("topic", topic).Info("Error sending door buzzer.")
 		return false
 	}
 

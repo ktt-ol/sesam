@@ -23,7 +23,10 @@ certFile = "spacegate.cert.pem"
 username = ""
 password = ""
 statusTopic = "/access-control-system/space-state"
-doorBuzzerTopic = "/access-control-system/activate-door-buzzer"
+mainDoorBuzzerTopic = "/access-control-system/main-door/buzzer"
+glassDoorBuzzerTopic = "/access-control-system/glass-door/buzzer"
+doorDownstairsBuzzerTopic = "/access-control-system/downstairs-door/buzzer"
+
 
 [auth]
 userDirectory = "path/to/user/dir"

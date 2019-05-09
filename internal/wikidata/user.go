@@ -1,16 +1,16 @@
 package wikidata
 
 import (
-	"gopkg.in/hlandau/passlib.v1"
-	"io/ioutil"
-	"strings"
-	"path"
-	"regexp"
-	"os"
 	"bufio"
-	"github.com/sirupsen/logrus"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
+	"gopkg.in/hlandau/passlib.v1"
+	"io/ioutil"
+	"os"
+	"path"
+	"regexp"
+	"strings"
 )
 
 var logger = logrus.WithField("where", "WikiData")

@@ -39,7 +39,8 @@ body.opened {
 }
 
 .door-actions {
-    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 .door-actions .spinning-container {
     display: none;

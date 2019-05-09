@@ -42,7 +42,9 @@ type MqttConf struct {
 	// if empty, the system certificates are used
 	CertFile        string
 	StatusTopic     string
-	DoorBuzzerTopic string
+	MainDoorBuzzerTopic string
+	GlassDoorBuzzerTopic string
+	DoorDownstairsBuzzerTopic string
 }
 
 type AuthConf struct {
