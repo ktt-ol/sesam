@@ -28,6 +28,7 @@
 [[constraint]]
   name = "github.com/gin-gonic/gin"
   branch = "master"
+#  version = "1.4.0"
 
 [[constraint]]
   branch = "master"
@@ -35,15 +36,15 @@
 
 [[constraint]]
   name = "github.com/BurntSushi/toml"
-  version = "0.3.0"
+  version = "0.3.1"
 
 [[constraint]]
   name = "github.com/sirupsen/logrus"
-  version = "1.0.4"
+  version = "1.4.1"
 
 [[constraint]]
   name = "github.com/eclipse/paho.mqtt.golang"
-  branch = "v1.2.0"
+  version = "v1.2.0"
 
 [[constraint]]
   branch = "master"

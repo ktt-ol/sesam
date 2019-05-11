@@ -15,10 +15,11 @@ func LoadConfig(configFile string) TomlConfig {
 }
 
 type TomlConfig struct {
-	Logging LoggingConf
-	Server  ServerConf
-	Mqtt    MqttConf
-	Auth    AuthConf
+	Logging    LoggingConf
+	Server     ServerConf
+	Mqtt       MqttConf
+	AuthLocal  AuthLocal
+	AuthOnline AuthOnline
 }
 
 type LoggingConf struct {
@@ -40,14 +41,19 @@ type MqttConf struct {
 	Username string
 	Password string
 	// if empty, the system certificates are used
-	CertFile        string
-	StatusTopic     string
-	MainDoorBuzzerTopic string
-	GlassDoorBuzzerTopic string
+	CertFile                  string
+	StatusTopic               string
+	MainDoorBuzzerTopic       string
+	GlassDoorBuzzerTopic      string
 	DoorDownstairsBuzzerTopic string
 }
 
-type AuthConf struct {
+type AuthLocal struct {
 	UserDirectory string
 	GroupPageFile string
+}
+
+type AuthOnline struct {
+	WikiBaseUrl string
+	AuthToken   string
 }

@@ -8,9 +8,9 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
-    <link rel="icon" href="assets/icons/launcher-icon-1x.png" sizes="48x48" />
-    <link rel="icon" href="assets/icons/launcher-icon-2x.png" sizes="96x96" />
-    <link rel="icon" href="assets/icons/launcher-icon-4x.png" sizes="192x192" />
+    <link rel="icon" href="assets/icons/launcher-icon-1x.png" sizes="48x48"/>
+    <link rel="icon" href="assets/icons/launcher-icon-2x.png" sizes="96x96"/>
+    <link rel="icon" href="assets/icons/launcher-icon-4x.png" sizes="192x192"/>
 
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/custom.css">
@@ -22,13 +22,18 @@
 <div class="header">
     <div class="container">
         <div class="brand">
-            <img src="assets/images/mainframe-long.svg" alt="Mainframe" class="logo">
-            <span class="name">Sesam</span>
+            <img src="assets/images/mainframe-long.svg" alt="Mainframe" class="logo" width="218" height="30">
         </div>
-        <div class="actions">
-            <span class="login">[ {{.login}} ]</span>
-            <span class="logout-action">
-                <a href="/logout">Logout</a>
+        <div class="second">
+            <div class="sesam-brand">
+                <img src="assets/icons/icons8-schluessel.svg" alt="Sesam" height="25">
+                <span class="sesam-name">Sesam</span>
+            </div>
+            <span class="login">
+                <span class="name">{{.login}}</span>
+                <span class="logout-action">
+                    <a href="/logout">[ Logout ]</a>
+                </span>
             </span>
         </div>
     </div>
@@ -36,29 +41,31 @@
 
 <div class="container">
 
-{{if not .isOpen }}
-    <div class="space-closed">
-        The space is closed. You can't open any doors.
-    </div>
-{{end}}
+    {{if not .isOpen }}
+        <h2 class="space-closed">
+            Sorry, the space is closed. You can't open any doors.
+        </h2>
+    {{end}}
 
-{{if .isOpen }}
-    <div class="door-actions text-center" id="doorButtons">
-        <div class="spinning-container">
-            <div class="spinner">
-                <div class="bounce1"></div>
-                <div class="bounce2"></div>
-                <div class="bounce3"></div>
+    {{if .isOpen }}
+        <div class="door-actions text-center" id="doorButtons">
+            <div class="spinning-container">
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
             </div>
+
+            <button class="btn btn-lg btn-primary btn3d" onclick="buzzer('outer', '{{.csrf}}')">Open OUTER door</button>
+
+            {{/*        <button class="btn btn-lg btn-primary btn3d" onclick="buzzer('innerGlass', '{{.csrf}}')">Open INNER Glass door</button>*/}}
+            <button class="btn btn-lg btn-primary btn3d" disabled>Open INNER Glass door</button>
+
+            {{/*        <button class="btn btn-lg btn-primary btn3d" onclick="buzzer('innerMetal', '{{.csrf}}')">Open INNER Metal door</button>*/}}
+            <button class="btn btn-lg btn-primary btn3d" disabled>Open INNER Metal door</button>
         </div>
-
-        <button class="btn btn-lg btn-primary" onclick="buzzer('outer', '{{.csrf}}')">Open OUTER door</button>
-
-        <button class="btn btn-lg btn-primary" onclick="buzzer('innerGlass', '{{.csrf}}')">Open INNER Glass door</button>
-
-        <button class="btn btn-lg btn-primary" onclick="buzzer('innerMetal', '{{.csrf}}')">Open INNER Metal door</button>
-    </div>
-{{end}}
+    {{end}}
 
 </div>
 

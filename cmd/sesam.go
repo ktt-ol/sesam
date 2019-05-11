@@ -5,7 +5,7 @@ import (
 	"github.com/ktt-ol/sesam/internal/conf"
 	"github.com/ktt-ol/sesam/internal/mqtt"
 	"github.com/ktt-ol/sesam/internal/web"
-	"github.com/ktt-ol/sesam/internal/wikidata"
+	"github.com/ktt-ol/sesam/internal/wikiauth"
 	"github.com/sirupsen/logrus"
 	"os"
 )
@@ -15,18 +15,20 @@ func main() {
 	setupLogging(config.Logging)
 
 	logrus.WithFields(logrus.Fields{
-		"url": config.Mqtt.Url,
+		"mqttUrl":      config.Mqtt.Url,
 		"mqttUser": config.Mqtt.Username,
+		"serving":  fmt.Sprintf("%s:%d", config.Server.Host, config.Server.Port),
+		"https":    config.Server.Https,
 	}).Info("Sesam is starting...")
 
-	wikiData := wikidata.NewWikiData(config.Auth.UserDirectory, config.Auth.GroupPageFile)
+	//auth := wikiauth.NewLocalFilesAuth(&config.AuthLocal)
+	auth := wikiauth.NewOnlineAuth(&config.AuthOnline)
 
 	//mqtt.EnableMqttDebugLogging()
 	mqttHandler := mqtt.NewMqttHandler(config.Mqtt)
 
-	web.StartWeb(config.Server, wikiData, mqttHandler)
+	web.StartWeb(config.Server, auth, mqttHandler)
 }
-
 
 type StdErrLogHook struct {
 }

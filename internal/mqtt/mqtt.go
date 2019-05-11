@@ -31,12 +31,23 @@ type MqttHandler struct {
 	conf   conf.MqttConf
 }
 
+type mqttDebugLogger struct {
+	logger *logrus.Entry
+	level logrus.Level
+}
+
+func (m mqttDebugLogger) Println(v ...interface{}) {
+	m.logger.Logln(m.level, v)
+}
+func (m mqttDebugLogger) Printf(format string, v ...interface{}) {
+	m.logger.Logf(m.level, format, v)
+}
+
 func EnableMqttDebugLogging() {
-	stdLogWriter := logrus.StandardLogger().Writer()
-	mqtt.ERROR.SetOutput(stdLogWriter)
-	mqtt.CRITICAL.SetOutput(stdLogWriter)
-	mqtt.WARN.SetOutput(stdLogWriter)
-	mqtt.DEBUG.SetOutput(stdLogWriter)
+	mqtt.ERROR = mqttDebugLogger{mqttLogger, logrus.ErrorLevel}
+	mqtt.CRITICAL = mqttDebugLogger{mqttLogger, logrus.ErrorLevel}
+	mqtt.WARN = mqttDebugLogger{mqttLogger, logrus.WarnLevel}
+	mqtt.DEBUG = mqttDebugLogger{mqttLogger, logrus.DebugLevel}
 }
 
 func NewMqttHandler(conf conf.MqttConf) *MqttHandler {
@@ -63,7 +74,7 @@ func NewMqttHandler(conf conf.MqttConf) *MqttHandler {
 	opts.SetKeepAlive(10 * time.Second)
 	opts.SetMaxReconnectInterval(5 * time.Minute)
 
-	handler := MqttHandler{status: conf.StatusTopic, conf: conf}
+	handler := MqttHandler{conf: conf}
 	opts.SetOnConnectHandler(handler.onConnect)
 	opts.SetConnectionLostHandler(handler.onConnectionLost)
 
@@ -110,7 +121,7 @@ func (h *MqttHandler) SendDoorBuzzer(door Door) bool {
 func (h *MqttHandler) onConnect(client mqtt.Client) {
 	mqttLogger.Info("connected")
 
-	err := subscribe(client, h.status,
+	err := subscribe(client, h.conf.StatusTopic,
 		func(client mqtt.Client, message mqtt.Message) {
 			h.status = string(message.Payload())
 			mqttLogger.WithField("status", h.status).Info("got new status")

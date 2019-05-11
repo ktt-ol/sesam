@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ktt-ol/sesam/internal/conf"
 	"github.com/ktt-ol/sesam/internal/mqtt"
-	"github.com/ktt-ol/sesam/internal/wikidata"
+	"github.com/ktt-ol/sesam/internal/wikiauth"
 	"github.com/sirupsen/logrus"
 	"github.com/utrack/gin-csrf"
 	"net/http"
@@ -20,12 +20,12 @@ const REMEMBER_PASSWORD_DAYS = 180;
 var logger = logrus.WithField("where", "web")
 
 type web struct {
-	wikiData    *wikidata.WikiData
+	wikiData    wikiauth.WikiAuth
 	mqttHandler *mqtt.MqttHandler
 }
 
-func StartWeb(config conf.ServerConf, wikiData *wikidata.WikiData, mqttHandler *mqtt.MqttHandler) {
-	webHandler := web{wikiData, mqttHandler}
+func StartWeb(config conf.ServerConf, wikiAuth wikiauth.WikiAuth, mqttHandler *mqtt.MqttHandler) {
+	webHandler := web{wikiAuth, mqttHandler}
 
 	keys := conf.GetKeys(config.KeysFile)
 
@@ -122,8 +122,9 @@ func (w *web) putBuzzer(c *gin.Context) {
 		return
 	}
 
-	//ok := w.mqttHandler.SendDoorBuzzer(door)
-	ok := true; println(door)
+	ok := w.mqttHandler.SendDoorBuzzer(door)
+	//ok := true;
+	//println(door)
 	if ok {
 		ipLogger.WithField("userName", userName).WithField("door", doorStr).Info("door opened")
 		c.String(200, "OK")
@@ -152,13 +153,14 @@ func (w *web) postLogin(c *gin.Context) {
 	time.Sleep(time.Duration(time.Second))
 
 	form.Email = strings.ToLower(form.Email)
-	userName, _, err := w.wikiData.CheckPassword(form.Email, form.Password)
-	if err != nil {
-		ipLogger.WithError(err).Warn("login failed.")
+	userName, authErr := w.wikiData.CheckPassword(form.Email, form.Password)
+	if authErr != nil {
+		ipLogger.WithField("login", form.Email).WithField("system", authErr.SystemError).WithError(authErr.Error).Warn("login failed.")
 		c.HTML(http.StatusOK, "login.html", gin.H{
-			"days":  REMEMBER_PASSWORD_DAYS,
-			"error": true,
-			"csrf":  csrf.GetToken(c),
+			"days":        REMEMBER_PASSWORD_DAYS,
+			"error":       !authErr.SystemError,
+			"systemError": authErr.SystemError,
+			"csrf":        csrf.GetToken(c),
 		})
 		return
 	}

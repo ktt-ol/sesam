@@ -8,9 +8,9 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
-    <link rel="icon" href="assets/icons/launcher-icon-1x.png" sizes="48x48" />
-    <link rel="icon" href="assets/icons/launcher-icon-2x.png" sizes="96x96" />
-    <link rel="icon" href="assets/icons/launcher-icon-4x.png" sizes="192x192" />
+    <link rel="icon" href="assets/icons/launcher-icon-1x.png" sizes="48x48"/>
+    <link rel="icon" href="assets/icons/launcher-icon-2x.png" sizes="96x96"/>
+    <link rel="icon" href="assets/icons/launcher-icon-4x.png" sizes="192x192"/>
 
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/custom.css">
@@ -22,8 +22,13 @@
 <div class="header">
     <div class="container">
         <div class="brand">
-            <img src="assets/images/mainframe-long.svg" alt="Mainframe" class="logo">
-            <span class="name">Sesam</span>
+            <img src="assets/images/mainframe-long.svg" alt="Mainframe" class="logo" width="218" height="30">
+        </div>
+        <div class="second">
+            <div class="sesam-brand">
+                <img src="assets/icons/icons8-schluessel.svg" alt="Sesam" height="25">
+                <span class="sesam-name">Sesam</span>
+            </div>
         </div>
     </div>
 </div>
@@ -43,15 +48,23 @@
                             Unknown email/name or invalid password :(
                         </div>
                     {{end}}
+                    {{if .systemError }}
+                        <div class="alert alert-danger" role="alert">
+                            Unknown server error. Please try later again.
+                        </div>
+                    {{end}}
 
-                    <form accept-charset="UTF-8" role="form" action="/login" method="post">
+                    <form accept-charset="UTF-8" role="form" action="/login" method="post"
+                          onsubmit="showLoginWaiting()">
                         <input type="hidden" name="_csrf" value="{{.csrf}}">
                         <fieldset>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Email or name" name="email" type="text" required>
+                                <input class="form-control" placeholder="Email or name" name="email" type="text"
+                                       required>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Password" name="password" type="password" required>
+                                <input class="form-control" placeholder="Password" name="password" type="password"
+                                       required>
                             </div>
                             <div class="checkbox">
                                 <label>
@@ -59,7 +72,14 @@
                                 </label>
                             </div>
 
-                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+                            <button class="btn btn-lg btn-success btn-block" type="submit" value="Login" id="loginButton">
+                                <span class="login-label">Login</span>
+                                <div class="spinner login-spinner">
+                                    <div class="bounce1"></div>
+                                    <div class="bounce2"></div>
+                                    <div class="bounce3"></div>
+                                </div>
+                            </button>
                         </fieldset>
                     </form>
                 </div>

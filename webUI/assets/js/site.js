@@ -34,7 +34,9 @@ function buzzer(door, csrfToken) {
             removeClass(dooButtons, "sending");
             var buttons = document.getElementsByTagName('button');
             for (var i = 0; i < buttons.length; i++) {
-                buttons.item(i).disabled = false;
+                if (buttons.item(i).onclick) {
+                    buttons.item(i).disabled = false;
+                }
             }
 
             if (serverError) {
@@ -81,4 +83,11 @@ function sendRequest(url, csrfToken, callback) {
             }
         }
     };
+}
+
+
+function showLoginWaiting() {
+    var lBtn = document.getElementById('loginButton');
+    addClass(lBtn, 'waiting');
+    lBtn.disabled = true;
 }

@@ -1,3 +1,15 @@
+/*for the footer*/
+html {
+    height: 100%;
+}
+
+/*for the footer*/
+body {
+    min-height: 100%;
+    position: relative;
+    padding-bottom: 6rem;
+}
+
 .container {
     max-width: 600px;
 }
@@ -8,13 +20,26 @@
     margin-top: 5%;
 }
 
+.login-container .login-spinner {
+    display: none;
+}
+
+.login-container .waiting .login-label {
+    display: none;
+}
+
+.login-container .waiting .login-spinner {
+    display: block;
+}
+
 /* main page */
 
 body.closed {
-    background-color: #f2dede;
+    background-color: #f2dedea8;
 }
+
 body.opened {
-    background-color: #dff0d8;
+    background-color: #dff0d8a8;
 }
 
 .header {
@@ -25,26 +50,46 @@ body.opened {
     color: #777;
     border-bottom: 1px solid #E5E5E5;
 }
+
 .header .brand {
     font-size: 24px;
     font-weight: bold;
-    margin-top: 5px;
-    display: flex;
-    justify-content: space-between;
 }
-.header .actions {
-    margin-top: 10px;
+
+.header .second {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.header .sesam-brand {
+    display: flex;
+    align-items: center;
+}
+
+.header .second img {
+    height: 32px;
+}
+
+.header .second .sesam-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.header .second .login {
+    font-size: 18px;
 }
 
 .door-actions {
     display: flex;
     flex-direction: column;
 }
+
 .door-actions .spinning-container {
     display: none;
 }
+
 .door-actions.sending .spinning-container {
     display: flex;
 }
@@ -60,10 +105,15 @@ body.opened {
 }
 
 .footer {
+    position: absolute;
     bottom: 0;
+    width: 100%;
     text-align: center;
     padding: 3px;
-    margin-top: 30px;
+}
+
+.footer a {
+    color: #777;
 }
 
 
@@ -79,6 +129,7 @@ body.opened {
     border-radius: 4px;
     z-index: 1;
 }
+
 .spinner {
     margin: 10px auto 0;
     width: 70px;
@@ -110,18 +161,23 @@ body.opened {
 }
 
 @-webkit-keyframes bouncedelay {
-    0%, 80%, 100% { -webkit-transform: scale(0.0) }
-    40% { -webkit-transform: scale(1.0) }
+    0%, 80%, 100% {
+        -webkit-transform: scale(0.0)
+    }
+    40% {
+        -webkit-transform: scale(1.0)
+    }
 }
 
 @keyframes bouncedelay {
     0%, 80%, 100% {
         transform: scale(0.0);
         -webkit-transform: scale(0.0);
-    } 40% {
-          transform: scale(1.0);
-          -webkit-transform: scale(1.0);
-      }
+    }
+    40% {
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+    }
 }
 
 /* https://www.w3schools.com/howto/howto_js_snackbar.asp */
@@ -150,21 +206,95 @@ body.opened {
 }
 
 @-webkit-keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 30px; opacity: 1;}
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
 }
 
 @keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 30px; opacity: 1;}
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
 }
 
 @-webkit-keyframes fadeout {
-    from {bottom: 30px; opacity: 1;}
-    to {bottom: 0; opacity: 0;}
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
 }
 
 @keyframes fadeout {
-    from {bottom: 30px; opacity: 1;}
-    to {bottom: 0; opacity: 0;}
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+/* https://www.bootdey.com/snippets/view/Full-bootsra-3d-Buttons */
+.btn3d {
+    transition: all .08s linear;
+    position: relative;
+    outline: medium none;
+    -moz-outline-style: none;
+    border: 0px;
+    margin-right: 10px;
+    margin-top: 15px;
+}
+
+.btn3d:focus {
+    outline: medium none;
+    -moz-outline-style: none;
+}
+
+.btn3d:active {
+    top: 9px;
+}
+
+.btn3d.btn-default {
+    box-shadow: 0 0 0 1px #ebebeb inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #adadad, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5);
+    background-color: #fff;
+}
+
+.btn3d.btn-primary {
+    box-shadow: 0 0 0 1px #428bca inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #357ebd, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5);
+    background-color: #428bca;
+}
+
+.btn3d.btn-success {
+    box-shadow: 0 0 0 1px #5cb85c inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #4cae4c, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5);
+    background-color: #5cb85c;
+}
+
+.btn3d.btn-info {
+    box-shadow: 0 0 0 1px #5bc0de inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #46b8da, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5);
+    background-color: #5bc0de;
+}
+
+.btn3d.btn-warning {
+    box-shadow: 0 0 0 1px #f0ad4e inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #eea236, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5);
+    background-color: #f0ad4e;
+}
+
+.btn3d.btn-danger {
+    box-shadow: 0 0 0 1px #c63702 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 8px 0 0 #C24032, 0 8px 0 1px rgba(0, 0, 0, 0.4), 0 8px 8px 1px rgba(0, 0, 0, 0.5);
+    background-color: #c63702;
 }

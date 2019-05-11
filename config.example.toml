@@ -28,6 +28,11 @@ glassDoorBuzzerTopic = "/access-control-system/glass-door/buzzer"
 doorDownstairsBuzzerTopic = "/access-control-system/downstairs-door/buzzer"
 
 
-[auth]
+[AuthLocal]
 userDirectory = "path/to/user/dir"
 groupPageFile = "path/to/groupPageFile"
+
+[AuthOnline]
+# without ending /
+wikiBaseUrl = "https://wiki.mainframe.io"
+authToken = "... your secret auth token..."

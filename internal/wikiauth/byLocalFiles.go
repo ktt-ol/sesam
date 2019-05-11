@@ -1,9 +1,8 @@
-package wikidata
+package wikiauth
 
 import (
 	"bufio"
-	"errors"
-	"fmt"
+	"github.com/ktt-ol/sesam/internal/conf"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/hlandau/passlib.v1"
 	"io/ioutil"
@@ -13,9 +12,9 @@ import (
 	"strings"
 )
 
-var logger = logrus.WithField("where", "WikiData")
+var logger = logrus.WithField("where", "localFilesAuth")
 
-type WikiData struct {
+type localFilesAuth struct {
 	// contains only user in the group file
 	// name -> pwHash
 	nameToHashMap map[string]string
@@ -23,22 +22,22 @@ type WikiData struct {
 	emailToNameMap map[string]string
 }
 
-func NewWikiData(userDirectory string, groupPageFile string) *WikiData {
-	wd := WikiData{make(map[string]string), make(map[string]string)}
-	memberNames := wd.loadGroupData(groupPageFile)
-	wd.loadUserDataDir(userDirectory, memberNames)
+func NewLocalFilesAuth(config *conf.AuthLocal) WikiAuth {
+	wd := localFilesAuth{make(map[string]string), make(map[string]string)}
+	memberNames := wd.loadGroupData(config.GroupPageFile)
+	wd.loadUserDataDir(config.UserDirectory, memberNames)
 	return &wd
 }
 
 // CheckPassword checks the password for the given email or name
 // if the login was successful (sucess = true) the userName is returned, even if the user logged in with an email
-func (w *WikiData) CheckPassword(emailOrName string, password string) (userName string, loginNotFound bool, errResult error) {
+func (w *localFilesAuth) CheckPassword(emailOrName string, password string) (userName string, authError *AuthError) {
 	userName = emailOrName
 	if strings.Contains(emailOrName, "@") {
 		nameFromMap, ok := w.emailToNameMap[emailOrName]
 		if !ok {
-			errResult = errors.New("email doesn't exist (or not in Member group)")
-			loginNotFound = true
+			//errResult = errors.New("email doesn't exist (or not in Member group)")
+			//loginNotFound = true
 			return
 		}
 		userName = nameFromMap
@@ -46,8 +45,8 @@ func (w *WikiData) CheckPassword(emailOrName string, password string) (userName 
 
 	pwHash, ok := w.nameToHashMap[userName]
 	if !ok {
-		errResult = errors.New("user doesn't exist (or not in Member group)")
-		loginNotFound = true
+		//errResult = errors.New("user doesn't exist (or not in Member group)")
+		//loginNotFound = true
 		return
 	}
 
@@ -55,14 +54,14 @@ func (w *WikiData) CheckPassword(emailOrName string, password string) (userName 
 	if err != nil {
 		// incorrect password, malformed hash, etc.
 		// either way, reject
-		errResult = errors.New(fmt.Sprintf("invalid password (lib said: '%s'", err))
+		//errResult = errors.New(fmt.Sprintf("invalid password (lib said: '%s'", err))
 		return
 	}
 
 	return
 }
 
-func (w *WikiData) loadGroupData(groupPageFile string) map[string]struct{} {
+func (w *localFilesAuth) loadGroupData(groupPageFile string) map[string]struct{} {
 	file, err := os.Open(groupPageFile)
 	defer file.Close()
 	if err != nil {
@@ -86,7 +85,7 @@ func (w *WikiData) loadGroupData(groupPageFile string) map[string]struct{} {
 	return memberNameSet
 }
 
-func (w *WikiData) loadUserDataDir(userDirectory string, memberNames map[string]struct{}) {
+func (w *localFilesAuth) loadUserDataDir(userDirectory string, memberNames map[string]struct{}) {
 	dirList, err := ioutil.ReadDir(userDirectory)
 	if err != nil {
 		logger.WithError(err).WithField("userDirectory", userDirectory).Fatal("Can't read simpleUser directory")
@@ -101,7 +100,7 @@ func (w *WikiData) loadUserDataDir(userDirectory string, memberNames map[string]
 	}
 }
 
-func (w *WikiData) readUserFile(userFile string, memberNames map[string]struct{}) {
+func (w *localFilesAuth) readUserFile(userFile string, memberNames map[string]struct{}) {
 	file, err := os.Open(userFile)
 	defer file.Close()
 	if err != nil {
