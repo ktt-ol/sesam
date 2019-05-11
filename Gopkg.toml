@@ -27,8 +27,7 @@
 
 [[constraint]]
   name = "github.com/gin-gonic/gin"
-  branch = "master"
-#  version = "1.4.0"
+  version = "1.4.0"
 
 [[constraint]]
   branch = "master"

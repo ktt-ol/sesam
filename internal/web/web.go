@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/ktt-ol/sesam/internal/conf"
 	"github.com/ktt-ol/sesam/internal/mqtt"
@@ -35,7 +36,7 @@ func StartWeb(config conf.ServerConf, wikiAuth wikiauth.WikiAuth, mqttHandler *m
 
 	router := gin.Default()
 
-	store := sessions.NewCookieStore(keys.SessionAuthKey, keys.SessionEncryptionKey)
+	store := cookie.NewStore(keys.SessionAuthKey, keys.SessionEncryptionKey)
 	store.Options(sessions.Options{HttpOnly: true, Secure: true})
 	router.Use(sessions.Sessions("sesam", store))
 
