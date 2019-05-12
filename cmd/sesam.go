@@ -10,15 +10,18 @@ import (
 	"os"
 )
 
+var buildVersion = "unkown"
+
 func main() {
 	config := conf.LoadConfig("config.toml")
 	setupLogging(config.Logging)
 
 	logrus.WithFields(logrus.Fields{
-		"mqttUrl":      config.Mqtt.Url,
+		"mqttUrl":  config.Mqtt.Url,
 		"mqttUser": config.Mqtt.Username,
 		"serving":  fmt.Sprintf("%s:%d", config.Server.Host, config.Server.Port),
 		"https":    config.Server.Https,
+		"version":  buildVersion,
 	}).Info("Sesam is starting...")
 
 	//auth := wikiauth.NewLocalFilesAuth(&config.AuthLocal)
