@@ -58,7 +58,7 @@ func (a *onlineAuth) CheckPassword(emailOrName string, password string) (userNam
 	if strings.Contains(emailOrName, "@") {
 		name, notFound := a.getNameForEmail(emailOrName)
 		if notFound {
-			return "", &AuthError{Error: errors.New("email doesn't exist (or not in Member group)"), LoginNotFound: true}
+			return "", &AuthError{Error: errors.New("email doesn't exist"), LoginNotFound: true}
 		}
 		userName = name
 	}
@@ -67,7 +67,7 @@ func (a *onlineAuth) CheckPassword(emailOrName string, password string) (userNam
 	if result == "ok" {
 		return userName, nil
 	} else if result == "unknown_user" {
-		return userName, &AuthError{Error: errors.New("email doesn't exist (or not in Member group)"), LoginNotFound: true}
+		return userName, &AuthError{Error: errors.New("name doesn't exist (or not in Member group)"), LoginNotFound: true}
 	} else if result == "wrong_password" {
 		return userName, &AuthError{Error: errors.New("Invalid password")}
 	} else {

@@ -11,7 +11,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/utrack/gin-csrf"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -153,7 +152,6 @@ func (w *web) postLogin(c *gin.Context) {
 	// just let this request take at least one second to make password guessing more difficult.
 	time.Sleep(time.Duration(time.Second))
 
-	form.Email = strings.ToLower(form.Email)
 	userName, authErr := w.wikiData.CheckPassword(form.Email, form.Password)
 	if authErr != nil {
 		ipLogger.WithField("login", form.Email).WithField("system", authErr.SystemError).WithError(authErr.Error).Warn("login failed.")
