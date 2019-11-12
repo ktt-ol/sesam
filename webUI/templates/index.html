@@ -59,11 +59,9 @@
 
             <button class="btn btn-lg btn-primary btn3d" onclick="buzzer('outer', '{{.csrf}}')">Open OUTER door</button>
 
-            {{/*        <button class="btn btn-lg btn-primary btn3d" onclick="buzzer('innerGlass', '{{.csrf}}')">Open INNER Glass door</button>*/}}
-            <button class="btn btn-lg btn-primary btn3d" disabled>Open INNER Glass door</button>
+            <button class="btn btn-lg btn-primary btn3d" onclick="buzzer('innerGlass', '{{.csrf}}')">Open INNER Glass door</button>
 
-            {{/*        <button class="btn btn-lg btn-primary btn3d" onclick="buzzer('innerMetal', '{{.csrf}}')">Open INNER Metal door</button>*/}}
-            <button class="btn btn-lg btn-primary btn3d" disabled>Open INNER Metal door</button>
+            <button class="btn btn-lg btn-primary btn3d" onclick="buzzer('innerMetal', '{{.csrf}}')">Open INNER Metal door</button>
         </div>
     {{end}}
 
